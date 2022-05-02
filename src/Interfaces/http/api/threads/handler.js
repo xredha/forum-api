@@ -8,11 +8,10 @@ class ThreadsHandler {
   }
 
   async postThreadHandler(request, h) {
+    const payload = request.payload;
+    const userId = request.auth.credentials.id;
     const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
-    const addedThread = await addThreadUseCase.execute(
-      request.payload,
-      request.auth.credentials.id
-    );
+    const addedThread = await addThreadUseCase.execute(payload, userId);
 
     const response = h.response({
       status: 'success',

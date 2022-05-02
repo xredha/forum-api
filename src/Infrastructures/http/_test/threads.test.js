@@ -6,20 +6,34 @@ const container = require('../../container');
 const createServer = require('../createServer');
 
 describe('/threads endpoint', () => {
+  let server;
+  let accessToken;
   const user = {
     username: 'galih',
     password: 'rahasia',
     fullname: 'galih redha'
-  }
+  };
 
   beforeEach(async () => {
+    server = await createServer(container);
+
     // Make User
-    const server = await createServer(container);
     await server.inject({
       method: 'POST',
       url: '/users',
       payload: user
     })
+
+    // Login
+    const authentications = await server.inject({
+      method: 'POST',
+      url: '/authentications',
+      payload: {
+        username: user.username,
+        password: user.password
+      }
+    })
+    accessToken = JSON.parse(authentications.payload).data.accessToken;
   })
 
   afterAll(async () => {
@@ -34,19 +48,6 @@ describe('/threads endpoint', () => {
 
   describe('when POST /threads', () => {
     it('should response 201 and persisted thread', async () => {
-      const server = await createServer(container);
-
-      const authentications = await server.inject({
-        method: 'POST',
-        url: '/authentications',
-        payload: {
-          username: user.username,
-          password: user.password
-        }
-      })
-      const responseAuthentications = JSON.parse(authentications.payload);
-      const accessToken = responseAuthentications.data.accessToken;
-
       const requestPayload = {
         title: 'Test Title Thread',
         body: 'Test Body Thread'
@@ -67,8 +68,6 @@ describe('/threads endpoint', () => {
     });
 
     it('should response 401 when before request didnt login (not authorization)', async () => {
-      const server = await createServer(container);
-
       const requestPayload = {
         title: 'Test Title Thread',
         body: 'Test Body Thread'
@@ -77,27 +76,16 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
+        headers: {
+          Authorization: 'Bearer undefined'
+        }
       });
 
       const responseJson = JSON.parse(responseThreads.payload);
       expect(responseJson.statusCode).toEqual(401);
-      expect(responseJson.error).toEqual('Unauthorized');
     });
 
     it('should response 400 when request payload not contain needed property', async () => {
-      const server = await createServer(container);
-
-      const authentications = await server.inject({
-        method: 'POST',
-        url: '/authentications',
-        payload: {
-          username: user.username,
-          password: user.password
-        }
-      })
-      const responseAuthentications = JSON.parse(authentications.payload);
-      const accessToken = responseAuthentications.data.accessToken;
-
       const requestPayload = {
         title: 'Test Title Thread'
       };
@@ -117,19 +105,6 @@ describe('/threads endpoint', () => {
     });
 
     it('should response 400 when request payload not meet data type specification', async () => {
-      const server = await createServer(container);
-
-      const authentications = await server.inject({
-        method: 'POST',
-        url: '/authentications',
-        payload: {
-          username: user.username,
-          password: user.password
-        }
-      })
-      const responseAuthentications = JSON.parse(authentications.payload);
-      const accessToken = responseAuthentications.data.accessToken;
-
       const requestPayload = {
         title: [],
         body: {},
