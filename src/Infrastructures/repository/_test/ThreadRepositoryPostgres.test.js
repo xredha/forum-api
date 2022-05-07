@@ -69,7 +69,7 @@ describe('ThreadRepositoryPostgres', () => {
     });
   });
 
-  describe('checkThreadIfExists function', () => {
+  describe('checkThreadIfExists', () => {
     it('should throw NotFoundError when thread not found', async () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
@@ -88,6 +88,25 @@ describe('ThreadRepositoryPostgres', () => {
         thread.id
       );
       expect(checkThread.id).toEqual(thread.id);
+    });
+  });
+
+  describe('getThreadById', () => {
+    it('should run function getThreadById correctly and return 5 objects (id, title, body, date, username)', async () => {
+      const thread = await ThreadsTableTestHelper.addThread({
+        owner: userIdCredentials,
+      });
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      const detailThread = await threadRepositoryPostgres.getThreadById(
+        thread.id
+      );
+
+      expect(detailThread).toHaveProperty('id');
+      expect(detailThread).toHaveProperty('title');
+      expect(detailThread).toHaveProperty('body');
+      expect(detailThread).toHaveProperty('date');
+      expect(detailThread).toHaveProperty('username');
     });
   });
 });

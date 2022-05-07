@@ -152,4 +152,35 @@ describe('CommentRepositoryPostgres', () => {
       expect(result.id).toEqual(comment.id);
     });
   })
+
+  describe('getCommentsByThreadId', () => {
+    it('should run function getCommentsByThreadId correctly and return empty comment', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      const getCommentsByThreadId = await commentRepositoryPostgres.getCommentsByThreadId('undefined');
+
+      expect(getCommentsByThreadId).toEqual([]);
+    });
+
+    it('should run function getCommentsByThreadId correctly and return many comment', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      await CommentsTableTestHelper.addComment({
+        thread: threadId,
+        owner: userId
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-234',
+        thread: threadId,
+        owner: userId
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-345',
+        thread: threadId,
+        owner: userId
+      });
+
+      const getCommentsByThreadId = await commentRepositoryPostgres.getCommentsByThreadId(threadId);
+
+      expect(getCommentsByThreadId).toHaveLength(3);
+    });
+  })
 });
