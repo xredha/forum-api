@@ -26,11 +26,11 @@ describe('DeleteCommentUseCase', () => {
       .fn()
       .mockImplementation(() => Promise.resolve());
 
-    const addCommentUseCase = new DeleteCommentUseCase({
+    const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
       threadRepository: mockThreadRepository,
     });
-    await addCommentUseCase.execute(useCasePayload, useCaseUserIdCredentials);
+    await deleteCommentUseCase.execute(useCasePayload, useCaseUserIdCredentials);
 
     expect(mockThreadRepository.checkThreadIfExists).toBeCalledWith(
       useCasePayload.thread

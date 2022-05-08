@@ -180,10 +180,6 @@ describe('/comments endpoint', () => {
       const responseDeleteComment = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadPayload.id}/comments/${dataComment.id}`,
-        payload: {
-          id: dataComment.id,
-          thread: threadPayload.id
-        },
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -211,10 +207,6 @@ describe('/comments endpoint', () => {
       const responseDeleteComment = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadPayload.id}/comments/${dataComment.id}`,
-        payload: {
-          id: dataComment.id,
-          thread: threadPayload.id
-        },
         headers: {
           Authorization: `Bearer undefined`,
         },
@@ -261,10 +253,6 @@ describe('/comments endpoint', () => {
       const responseDeleteComment = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadPayload.id}/comments/${dataComment.id}`,
-        payload: {
-          id: dataComment.id,
-          thread: threadPayload.id
-        },
         headers: {
           Authorization: `Bearer ${dummyAccesstoken}`,
         },
@@ -293,10 +281,6 @@ describe('/comments endpoint', () => {
       const responseDeleteComment = await server.inject({
         method: 'DELETE',
         url: `/threads/undefined/comments/${dataComment.id}`,
-        payload: {
-          id: dataComment.id,
-          thread: threadPayload.id
-        },
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -312,7 +296,7 @@ describe('/comments endpoint', () => {
       const requestPayload = {
         content: 'Test Content Comment',
       };
-      const responseComments = await server.inject({
+      await server.inject({
         method: 'POST',
         url: `/threads/${threadPayload.id}/comments`,
         payload: requestPayload,
@@ -320,15 +304,10 @@ describe('/comments endpoint', () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const dataComment = JSON.parse(responseComments.payload).data.addedComment;
 
       const responseDeleteComment = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadPayload.id}/comments/undefined`,
-        payload: {
-          id: dataComment.id,
-          thread: threadPayload.id
-        },
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

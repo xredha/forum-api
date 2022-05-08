@@ -197,4 +197,190 @@ describe('/replies endpoint', () => {
       );
     });
   });
+
+  describe('when /DELETE replies', () => {
+    it('should response 200 and success', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      const responseReplies = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const dataReply = JSON.parse(responseReplies.payload).data.addedReply;
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies/${dataReply.id}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      const deleteReply = JSON.parse(responseDeleteReplies.payload);
+      expect(responseDeleteReplies.statusCode).toEqual(200);
+      expect(deleteReply.status).toEqual('success');
+    });
+
+    it('should response 401 when before request didnt login (not authorization)', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      const responseReplies = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const dataReply = JSON.parse(responseReplies.payload).data.addedReply;
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies/${dataReply.id}`,
+        headers: {
+          Authorization: `Bearer undefined`,
+        },
+      })
+
+      expect(responseDeleteReplies.statusCode).toEqual(401);
+    });
+
+    it('should reponse 403 when comment didnt delete by the comment owner', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      const responseReplies = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const dataReply = JSON.parse(responseReplies.payload).data.addedReply;
+
+      // Login Another User
+      const dummyUser = {
+        username: 'dummy',
+        password: 'dummy123',
+        fullname: 'dummy dummy'
+      }
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: dummyUser
+      })
+      const authentications = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: dummyUser.username,
+          password: dummyUser.password
+        }
+      })
+      const dummyAccesstoken = JSON.parse(authentications.payload).data.accessToken;
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies/${dataReply.id}`,
+        headers: {
+          Authorization: `Bearer ${dummyAccesstoken}`,
+        },
+      })
+
+      const deleteReply = JSON.parse(responseDeleteReplies.payload);
+      expect(responseDeleteReplies.statusCode).toEqual(403);
+      expect(deleteReply.status).toEqual('fail');
+      expect(deleteReply.message).toEqual('balasan ini bukan milik anda');
+    })
+
+    it('should response 404 when thread not found', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      const responseReplies = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const dataReply = JSON.parse(responseReplies.payload).data.addedReply;
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/undefined/comments/${commentPayload.id}/replies/${dataReply.id}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      const deleteReply = JSON.parse(responseDeleteReplies.payload);
+      expect(responseDeleteReplies.statusCode).toEqual(404);
+      expect(deleteReply.status).toEqual('fail');
+      expect(deleteReply.message).toEqual('data thread tidak ditemukan');
+    })
+    
+    it('should response 404 when comment not found', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      const responseReplies = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const dataReply = JSON.parse(responseReplies.payload).data.addedReply;
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadPayload.id}/comments/undefined/replies/${dataReply.id}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      const deleteComment = JSON.parse(responseDeleteReplies.payload);
+      expect(responseDeleteReplies.statusCode).toEqual(404);
+      expect(deleteComment.status).toEqual('fail');
+      expect(deleteComment.message).toEqual('data komentar tidak ditemukan');
+    })
+
+    it('should response 404 when reply not found', async () => {
+      const requestPayload = {
+        content: 'Test Content Replies',
+      };
+      await server.inject({
+        method: 'POST',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const responseDeleteReplies = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/replies/undefined`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const deleteReply = JSON.parse(responseDeleteReplies.payload);
+      expect(responseDeleteReplies.statusCode).toEqual(404);
+      expect(deleteReply.status).toEqual('fail');
+      expect(deleteReply.message).toEqual('data balasan tidak ditemukan');
+    })
+  })
 })

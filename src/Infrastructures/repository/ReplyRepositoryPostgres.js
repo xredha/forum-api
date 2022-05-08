@@ -1,5 +1,7 @@
 const ReplyRepository = require("../../Domains/replies/ReplyRepository");
 const AddedReply = require('../../Domains/replies/entities/AddedReply');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 
 class ReplyRepositoryPostgres extends ReplyRepository {
   constructor(pool, idGenerator) {
@@ -36,6 +38,47 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
     const result = await this._pool.query(query);
     return result.rows;
+  }
+
+  async checkReplyIfExists(id) {
+    const query = {
+      text: 'SELECT id, is_delete AS booldelete FROM replies WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount || result.rows[0].booldelete) {
+      throw new NotFoundError('data balasan tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async verifyReplyOwner(id, userId) {
+    const query = {
+      text: 'SELECT id FROM replies WHERE id = $1 AND user_id = $2',
+      values: [id, userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new AuthorizationError('balasan ini bukan milik anda');
+    }
+
+    return result.rows[0];
+  }
+
+  async deleteReply(id) {
+    const query = {
+      text: 'UPDATE replies SET is_delete = $1 WHERE id = $2 RETURNING id, is_delete AS booldelete',
+      values: [true, id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0];
   }
 }
 
