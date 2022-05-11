@@ -9,7 +9,7 @@
     "test": "jest --setupFiles dotenv/config -i",
     "test:watch:change": "jest --watch --setupFiles dotenv/config -i",
     "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i",
-    "test:folder": "jest --setupFiles dotenv/config -i --testPathPattern=src/Domains/replies",
+    "test:folder": "jest --setupFiles dotenv/config -i --testPathPattern=src/Applications/use_case",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate -f config/database/test.json"
   },
