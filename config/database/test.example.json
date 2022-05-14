@@ -1,0 +1,7 @@
+{
+  "user": "your username",
+  "password": "your password",
+  "host": "local or remote url",
+  "port": 5432,
+  "database": "database_test"
+}
