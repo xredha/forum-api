@@ -50,7 +50,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       await replyRepositoryPostgres.addReply(addReply);
@@ -68,7 +68,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       const addedReply = await replyRepositoryPostgres.addReply(addReply);
@@ -78,7 +78,7 @@ describe('ReplyRepositoryPostgres', () => {
           id: 'reply-123',
           content: 'Test Content Reply',
           owner: userId,
-        })
+        }),
       );
     });
   });
@@ -92,7 +92,7 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       const getReply = await replyRepositoryPostgres.getRepliesByThreadId(
-        threadId
+        threadId,
       );
 
       expect(getReply[0]).toHaveProperty('id');
@@ -111,13 +111,13 @@ describe('ReplyRepositoryPostgres', () => {
       return expect(replyRepositoryPostgres.verifyReplyOwner('reply-999', userId))
         .rejects
         .toThrowError(AuthorizationError);
-    })
+    });
 
     it('should not throw AuthorizationError when reply is your owner', async () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
       const reply = await RepliesTableTestHelper.addReply({
         comment: commentId,
-        owner: userId
+        owner: userId,
       });
 
       await expect(replyRepositoryPostgres.verifyReplyOwner(reply.id, userId))
@@ -125,7 +125,7 @@ describe('ReplyRepositoryPostgres', () => {
         .not
         .toThrowError(AuthorizationError);
     });
-  })
+  });
 
   describe('checkReplyIsExists', () => {
     it('should throw NotFoundError when reply is not exists', async () => {
@@ -134,41 +134,41 @@ describe('ReplyRepositoryPostgres', () => {
       return expect(replyRepositoryPostgres.checkReplyIfExists('reply-999'))
         .rejects
         .toThrowError(NotFoundError);
-    })
+    });
 
     it('should throw NotFoundError when reply is exists but reply is deleted', async () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
       const reply = await RepliesTableTestHelper.addReply({
         comment: commentId,
         owner: userId,
-        isDelete: true
+        isDelete: true,
       });
 
       return expect(replyRepositoryPostgres.checkReplyIfExists(reply.id))
         .rejects
         .toThrowError(NotFoundError);
-    })
+    });
 
     it('should not throw NotFoundError when reply is exists and not deleted', async () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
       const reply = await RepliesTableTestHelper.addReply({
         comment: commentId,
-        owner: userId
+        owner: userId,
       });
 
       return expect(replyRepositoryPostgres.checkReplyIfExists(reply.id))
         .resolves
         .not
         .toThrowError(NotFoundError);
-    })
-  })
+    });
+  });
 
   describe('deleteReply', () => {
     it('should run function deleteReply correctly and return id, delete status', async () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
       const reply = await RepliesTableTestHelper.addReply({
         comment: commentId,
-        owner: userId
+        owner: userId,
       });
 
       const result = await replyRepositoryPostgres.deleteReply(reply.id);
@@ -176,5 +176,5 @@ describe('ReplyRepositoryPostgres', () => {
       expect(result.booldelete).toEqual(true);
       expect(result.id).toEqual(reply.id);
     });
-  })
+  });
 });

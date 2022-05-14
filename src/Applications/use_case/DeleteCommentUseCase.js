@@ -11,7 +11,7 @@ class DeleteCommentUseCase {
     await this._commentRepository.checkCommentIfExists(id);
     await this._commentRepository.verifyCommentOwner(
       id,
-      useCaseUserIdCredentials
+      useCaseUserIdCredentials,
     );
     await this._commentRepository.deleteComment(id);
   }

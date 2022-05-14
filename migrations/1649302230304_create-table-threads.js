@@ -23,11 +23,11 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
-  })
+  });
 };
 
 exports.down = (pgm) => {
   pgm.dropTable('threads', {
-    cascade: true
+    cascade: true,
   });
 };

@@ -3,11 +3,11 @@ const DetailThread = require('../DetailThread');
 describe('DetailThread entities', () => {
   it('should throw error when payload does not contain needed property', () => {
     const payload = {
-      id: 'thread-123'
+      id: 'thread-123',
     };
 
     expect(() => new DetailThread(payload)).toThrowError(
-      'DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY'
+      'DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -18,11 +18,11 @@ describe('DetailThread entities', () => {
       body: {},
       username: [],
       date: '00:50:57.265345+07',
-      comments: []
+      comments: [],
     };
 
     expect(() => new DetailThread(payload)).toThrowError(
-      'DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 
@@ -33,7 +33,7 @@ describe('DetailThread entities', () => {
       body: 'test body thread',
       username: 'galih',
       date: '00:50:57.265345+07',
-      comments: [{}]
+      comments: [{}],
     };
 
     const detailThread = new DetailThread(payload);

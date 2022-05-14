@@ -13,7 +13,7 @@ class DeleteReplyUseCase {
     await this._replyRepository.checkReplyIfExists(replyId);
     await this._replyRepository.verifyReplyOwner(
       replyId,
-      useCaseUserIdCredentials
+      useCaseUserIdCredentials,
     );
 
     await this._replyRepository.deleteReply(replyId);

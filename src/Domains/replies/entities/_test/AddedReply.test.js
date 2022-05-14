@@ -7,7 +7,7 @@ describe('AddedReply entities', () => {
     };
 
     expect(() => new AddedReply(payload)).toThrowError(
-      'ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY'
+      'ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -19,7 +19,7 @@ describe('AddedReply entities', () => {
     };
 
     expect(() => new AddedReply(payload)).toThrowError(
-      'ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 

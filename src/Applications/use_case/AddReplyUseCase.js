@@ -13,12 +13,12 @@ class AddReplyUseCase {
 
     await this._threadRepository.checkThreadIfExists(threadId);
     await this._commentRepository.checkCommentIfExists(commentId);
-    
+
     const addReply = new AddReply({
       content,
       comment: commentId,
-      owner: useCaseUserIdCredentials
-    })
+      owner: useCaseUserIdCredentials,
+    });
     return this._replyRepository.addReply(addReply);
   }
 }

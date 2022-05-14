@@ -1,4 +1,4 @@
-const ReplyRepository = require("../../Domains/replies/ReplyRepository");
+const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 const AddedReply = require('../../Domains/replies/entities/AddedReply');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
@@ -33,7 +33,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
               JOIN threads ON threads.id = comments.thread_id
               WHERE threads.id = $1
               ORDER BY replies.date`,
-      values: [threadId]
+      values: [threadId],
     };
 
     const result = await this._pool.query(query);

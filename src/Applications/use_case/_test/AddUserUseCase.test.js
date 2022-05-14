@@ -27,8 +27,7 @@ describe('AddUserUseCase', () => {
 
     /** mocking needed function */
     mockUserRepository.verifyAvailableUsername = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockPasswordHash.hash = jest
       .fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'));
@@ -39,7 +38,7 @@ describe('AddUserUseCase', () => {
           id: 'user-123',
           username: useCasePayload.username,
           fullname: useCasePayload.fullname,
-        })
+        }),
       ));
 
     /** creating use case instance */

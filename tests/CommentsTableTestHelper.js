@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-const pool = require('./../src/Infrastructures/database/postgres/pool');
+const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {
   async findCommentsById(id) {
@@ -17,7 +17,7 @@ const CommentsTableTestHelper = {
     content = 'hello world',
     thread,
     owner,
-    isDelete = false
+    isDelete = false,
   }) {
     const query = {
       text: 'INSERT INTO comments(id, content, thread_id, user_id, is_delete) VALUES($1, $2, $3, $4, $5) RETURNING id',

@@ -141,8 +141,7 @@ describe('GetDetailThreadUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.checkThreadIfExists = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockThreadRepository.getThreadById = jest
       .fn()
       .mockImplementation(() => Promise.resolve(thread));
@@ -176,20 +175,20 @@ describe('GetDetailThreadUseCase', () => {
 
     expect(detailThread).toEqual(expectedDetailThread);
     expect(mockThreadRepository.checkThreadIfExists).toBeCalledWith(
-      useCasePayload.id
+      useCasePayload.id,
     );
     expect(mockThreadRepository.getThreadById).toBeCalledWith(
-      useCasePayload.id
+      useCasePayload.id,
     );
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(
-      useCasePayload.id
+      useCasePayload.id,
     );
     expect(getDetailThreadUseCase._isDeleteCommentProcessing).toBeCalledWith(
-      comments
+      comments,
     );
     expect(getDetailThreadUseCase._isDeleteReplyProcessing).toBeCalledWith(
       comments,
-      replies
+      replies,
     );
   });
 
@@ -203,7 +202,9 @@ describe('GetDetailThreadUseCase', () => {
   it('should run function _isDeleteReplyCorrectly correctly', async () => {
     const getDetailThreadUseCase = new GetDetailThreadUseCase({}, {}, {});
 
-    expect(getDetailThreadUseCase._isDeleteReplyProcessing(comments, [])[0].replies).toHaveLength(0);
-    expect(getDetailThreadUseCase._isDeleteReplyProcessing(comments, replies)[0].replies).toHaveLength(2);
+    expect(getDetailThreadUseCase._isDeleteReplyProcessing(comments, [])[0].replies)
+      .toHaveLength(0);
+    expect(getDetailThreadUseCase._isDeleteReplyProcessing(comments, replies)[0].replies)
+      .toHaveLength(2);
   });
 });

@@ -31,9 +31,9 @@ class GetDetailThreadUseCase {
 
   _isDeleteReplyProcessing(comments, replies) {
     const replyDeletedText = '**balasan telah dihapus**';
-    for (let i = 0; i < comments.length; i++) {
+    for (let i = 0; i < comments.length; i += 1) {
       const filteredReplies = replies.filter(
-        (reply) => reply.commentid === comments[i].id
+        (reply) => reply.commentid === comments[i].id,
       );
       filteredReplies.forEach((reply) => {
         reply.content = reply.booldelete ? replyDeletedText : reply.content;

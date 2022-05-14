@@ -34,13 +34,13 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       await threadRepositoryPostgres.addThread(addThread);
 
       const threads = await ThreadsTableTestHelper.findThreadsById(
-        'thread-123'
+        'thread-123',
       );
       expect(threads).toHaveLength(1);
     });
@@ -54,7 +54,7 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       const addedThread = await threadRepositoryPostgres.addThread(addThread);
@@ -64,7 +64,7 @@ describe('ThreadRepositoryPostgres', () => {
           id: 'thread-123',
           title: 'Test Title Thread',
           owner: userIdCredentials,
-        })
+        }),
       );
     });
   });
@@ -85,7 +85,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
       const checkThread = await threadRepositoryPostgres.checkThreadIfExists(
-        thread.id
+        thread.id,
       );
       expect(checkThread.id).toEqual(thread.id);
     });
@@ -99,7 +99,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
       const detailThread = await threadRepositoryPostgres.getThreadById(
-        thread.id
+        thread.id,
       );
 
       expect(detailThread).toHaveProperty('id');

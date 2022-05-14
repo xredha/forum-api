@@ -13,12 +13,12 @@ describe('/comments endpoint', () => {
   const user = {
     username: 'galih',
     password: 'rahasia',
-    fullname: 'galih redha'
+    fullname: 'galih redha',
   };
   const thread = {
     title: 'Test Title Thread',
-    body: 'Test Body Thread'
-  }
+    body: 'Test Body Thread',
+  };
 
   beforeEach(async () => {
     server = await createServer(container);
@@ -27,8 +27,8 @@ describe('/comments endpoint', () => {
     await server.inject({
       method: 'POST',
       url: '/users',
-      payload: user
-    })
+      payload: user,
+    });
 
     // Login
     const authentications = await server.inject({
@@ -36,9 +36,9 @@ describe('/comments endpoint', () => {
       url: '/authentications',
       payload: {
         username: user.username,
-        password: user.password
-      }
-    })
+        password: user.password,
+      },
+    });
     accessToken = JSON.parse(authentications.payload).data.accessToken;
 
     // Make Thread
@@ -47,9 +47,9 @@ describe('/comments endpoint', () => {
       url: '/threads',
       payload: thread,
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     threadPayload = JSON.parse(threads.payload).data.addedThread;
   });
 
@@ -93,7 +93,7 @@ describe('/comments endpoint', () => {
         url: `/threads/${threadPayload.id}/comments`,
         payload: requestPayload,
         headers: {
-          Authorization: `Bearer undefined`,
+          Authorization: 'Bearer undefined',
         },
       });
 
@@ -106,7 +106,7 @@ describe('/comments endpoint', () => {
       };
       const responseComments = await server.inject({
         method: 'POST',
-        url: `/threads/undefined/comments`,
+        url: '/threads/undefined/comments',
         payload: requestPayload,
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -136,7 +136,7 @@ describe('/comments endpoint', () => {
       expect(responseComments.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'tidak dapat membuat comment baru karena properti yang dibutuhkan tidak ada'
+        'tidak dapat membuat comment baru karena properti yang dibutuhkan tidak ada',
       );
     });
 
@@ -157,7 +157,7 @@ describe('/comments endpoint', () => {
       expect(responseComments.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'tidak dapat membuat comment baru karena tipe data tidak sesuai'
+        'tidak dapat membuat comment baru karena tipe data tidak sesuai',
       );
     });
   });
@@ -183,7 +183,7 @@ describe('/comments endpoint', () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
+      });
 
       const deleteComment = JSON.parse(responseDeleteComment.payload);
       expect(responseDeleteComment.statusCode).toEqual(200);
@@ -208,9 +208,9 @@ describe('/comments endpoint', () => {
         method: 'DELETE',
         url: `/threads/${threadPayload.id}/comments/${dataComment.id}`,
         headers: {
-          Authorization: `Bearer undefined`,
+          Authorization: 'Bearer undefined',
         },
-      })
+      });
 
       expect(responseDeleteComment.statusCode).toEqual(401);
     });
@@ -233,21 +233,21 @@ describe('/comments endpoint', () => {
       const dummyUser = {
         username: 'dummy',
         password: 'dummy123',
-        fullname: 'dummy dummy'
-      }
+        fullname: 'dummy dummy',
+      };
       await server.inject({
         method: 'POST',
         url: '/users',
-        payload: dummyUser
-      })
+        payload: dummyUser,
+      });
       const authentications = await server.inject({
         method: 'POST',
         url: '/authentications',
         payload: {
           username: dummyUser.username,
-          password: dummyUser.password
-        }
-      })
+          password: dummyUser.password,
+        },
+      });
       const dummyAccesstoken = JSON.parse(authentications.payload).data.accessToken;
 
       const responseDeleteComment = await server.inject({
@@ -256,13 +256,13 @@ describe('/comments endpoint', () => {
         headers: {
           Authorization: `Bearer ${dummyAccesstoken}`,
         },
-      })
+      });
 
       const deleteComment = JSON.parse(responseDeleteComment.payload);
       expect(responseDeleteComment.statusCode).toEqual(403);
       expect(deleteComment.status).toEqual('fail');
       expect(deleteComment.message).toEqual('komentar ini bukan milik anda');
-    })
+    });
 
     it('should response 404 when thread not found', async () => {
       const requestPayload = {
@@ -284,14 +284,14 @@ describe('/comments endpoint', () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
+      });
 
       const deleteComment = JSON.parse(responseDeleteComment.payload);
       expect(responseDeleteComment.statusCode).toEqual(404);
       expect(deleteComment.status).toEqual('fail');
       expect(deleteComment.message).toEqual('data thread tidak ditemukan');
-    })
-    
+    });
+
     it('should response 404 when comment not found', async () => {
       const requestPayload = {
         content: 'Test Content Comment',
@@ -311,12 +311,12 @@ describe('/comments endpoint', () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
+      });
 
       const deleteComment = JSON.parse(responseDeleteComment.payload);
       expect(responseDeleteComment.statusCode).toEqual(404);
       expect(deleteComment.status).toEqual('fail');
       expect(deleteComment.message).toEqual('data komentar tidak ditemukan');
-    })
-  })
+    });
+  });
 });

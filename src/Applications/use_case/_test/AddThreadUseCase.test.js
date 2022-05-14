@@ -25,7 +25,7 @@ describe('AddThreadUseCase', () => {
           id: 'thread-123',
           title: useCasePayload.title,
           owner: useCaseUserIdCredentials,
-        })
+        }),
       ));
 
     const addThreadUseCase = new AddThreadUseCase({
@@ -34,7 +34,7 @@ describe('AddThreadUseCase', () => {
 
     const addThread = await addThreadUseCase.execute(
       useCasePayload,
-      useCaseUserIdCredentials
+      useCaseUserIdCredentials,
     );
 
     expect(addThread).toStrictEqual(expectedAddedThread);
@@ -43,7 +43,7 @@ describe('AddThreadUseCase', () => {
         title: useCasePayload.title,
         body: useCasePayload.body,
         owner: useCaseUserIdCredentials,
-      })
+      }),
     );
   });
 });

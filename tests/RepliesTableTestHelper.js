@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-const pool = require('./../src/Infrastructures/database/postgres/pool');
+const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const RepliesTableTestHelper = {
   async addReply({
@@ -7,7 +7,7 @@ const RepliesTableTestHelper = {
     content = 'test content reply',
     comment,
     owner,
-    isDelete = false
+    isDelete = false,
   }) {
     const query = {
       text: 'INSERT INTO replies(id, content, comment_id, user_id, is_delete) VALUES($1, $2, $3, $4, $5) RETURNING id',
@@ -21,8 +21,8 @@ const RepliesTableTestHelper = {
   async findRepliesById(id) {
     const query = {
       text: 'SELECT * FROM replies WHERE id = $1',
-      values: [id]
-    }
+      values: [id],
+    };
 
     const result = await pool.query(query);
     return result.rows;

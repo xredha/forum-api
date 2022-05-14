@@ -14,17 +14,13 @@ describe('DeleteCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.checkThreadIfExists = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockCommentRepository.checkCommentIfExists = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockCommentRepository.verifyCommentOwner = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockCommentRepository.deleteComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -33,17 +29,17 @@ describe('DeleteCommentUseCase', () => {
     await deleteCommentUseCase.execute(useCasePayload, useCaseUserIdCredentials);
 
     expect(mockThreadRepository.checkThreadIfExists).toBeCalledWith(
-      useCasePayload.thread
+      useCasePayload.thread,
     );
     expect(mockCommentRepository.checkCommentIfExists).toBeCalledWith(
-      useCasePayload.id
+      useCasePayload.id,
     );
     expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(
       useCasePayload.id,
-      useCaseUserIdCredentials
+      useCaseUserIdCredentials,
     );
     expect(mockCommentRepository.deleteComment).toBeCalledWith(
-      useCasePayload.id
+      useCasePayload.id,
     );
   });
 });

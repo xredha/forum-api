@@ -26,11 +26,9 @@ describe('AddReplyUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.checkThreadIfExists = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockCommentRepository.checkCommentIfExists = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
     mockReplyRepository.addReply = jest
       .fn()
       .mockImplementation(() => Promise.resolve(
@@ -38,7 +36,7 @@ describe('AddReplyUseCase', () => {
           id: 'reply-123',
           content: useCasePayload.content,
           owner: useCaseUserIdCredentials,
-        })
+        }),
       ));
 
     const addReplyUseCase = new AddReplyUseCase({
@@ -49,14 +47,14 @@ describe('AddReplyUseCase', () => {
     const addReply = await addReplyUseCase.execute(
       useCasePayload,
       useCaseParams,
-      useCaseUserIdCredentials
+      useCaseUserIdCredentials,
     );
 
     expect(mockThreadRepository.checkThreadIfExists).toBeCalledWith(
-      useCaseParams.threadId
+      useCaseParams.threadId,
     );
     expect(mockCommentRepository.checkCommentIfExists).toBeCalledWith(
-      useCaseParams.commentId
+      useCaseParams.commentId,
     );
     expect(addReply).toStrictEqual(expectedAddedReply);
     expect(mockReplyRepository.addReply).toBeCalledWith(
@@ -64,7 +62,7 @@ describe('AddReplyUseCase', () => {
         content: useCasePayload.content,
         comment: useCaseParams.commentId,
         owner: useCaseUserIdCredentials,
-      })
+      }),
     );
   });
 });

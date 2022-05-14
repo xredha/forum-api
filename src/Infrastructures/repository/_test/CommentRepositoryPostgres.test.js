@@ -42,13 +42,13 @@ describe('CommentRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       await commentRepositoryPostgres.addComment(addComment);
 
       const comments = await CommentsTableTestHelper.findCommentsById(
-        'comment-123'
+        'comment-123',
       );
       expect(comments).toHaveLength(1);
     });
@@ -62,11 +62,11 @@ describe('CommentRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       const addedComment = await commentRepositoryPostgres.addComment(
-        addComment
+        addComment,
       );
 
       expect(addedComment).toStrictEqual(
@@ -74,7 +74,7 @@ describe('CommentRepositoryPostgres', () => {
           id: 'comment-123',
           content: 'Test Content Comment',
           owner: userId,
-        })
+        }),
       );
     });
   });
@@ -86,13 +86,13 @@ describe('CommentRepositoryPostgres', () => {
       return expect(commentRepositoryPostgres.verifyCommentOwner('comment-999', userId))
         .rejects
         .toThrowError(AuthorizationError);
-    })
+    });
 
     it('should not throw AuthorizationError when comment is your owner', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
       const comment = await CommentsTableTestHelper.addComment({
         thread: threadId,
-        owner: userId
+        owner: userId,
       });
 
       await expect(commentRepositoryPostgres.verifyCommentOwner(comment.id, userId))
@@ -100,7 +100,7 @@ describe('CommentRepositoryPostgres', () => {
         .not
         .toThrowError(AuthorizationError);
     });
-  })
+  });
 
   describe('checkCommentIfExists', () => {
     it('should throw NotFoundError when comment is not exists', async () => {
@@ -109,20 +109,20 @@ describe('CommentRepositoryPostgres', () => {
       return expect(commentRepositoryPostgres.checkCommentIfExists('comment-999'))
         .rejects
         .toThrowError(NotFoundError);
-    })
+    });
 
     it('should throw NotFoundError when comment is exists but comment is deleted', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
       const comment = await CommentsTableTestHelper.addComment({
         thread: threadId,
         owner: userId,
-        isDelete: true
+        isDelete: true,
       });
 
       return expect(commentRepositoryPostgres.checkCommentIfExists(comment.id))
         .rejects
         .toThrowError(NotFoundError);
-    })
+    });
 
     it('should not throw NotFoundError when comment is exists and not deleted', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
@@ -135,23 +135,23 @@ describe('CommentRepositoryPostgres', () => {
         .resolves
         .not
         .toThrowError(NotFoundError);
-    })
-  })
+    });
+  });
 
   describe('deleteComment', () => {
     it('should run function deleteComment correctly and return id, delete status', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
       const comment = await CommentsTableTestHelper.addComment({
         thread: threadId,
-        owner: userId
-      })
+        owner: userId,
+      });
 
       const result = await commentRepositoryPostgres.deleteComment(comment.id);
 
       expect(result.booldelete).toEqual(true);
       expect(result.id).toEqual(comment.id);
     });
-  })
+  });
 
   describe('getCommentsByThreadId', () => {
     it('should run function getCommentsByThreadId correctly and return empty comment', async () => {
@@ -165,22 +165,22 @@ describe('CommentRepositoryPostgres', () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
       await CommentsTableTestHelper.addComment({
         thread: threadId,
-        owner: userId
+        owner: userId,
       });
       await CommentsTableTestHelper.addComment({
         id: 'comment-234',
         thread: threadId,
-        owner: userId
+        owner: userId,
       });
       await CommentsTableTestHelper.addComment({
         id: 'comment-345',
         thread: threadId,
-        owner: userId
+        owner: userId,
       });
 
       const getCommentsByThreadId = await commentRepositoryPostgres.getCommentsByThreadId(threadId);
 
       expect(getCommentsByThreadId).toHaveLength(3);
     });
-  })
+  });
 });
