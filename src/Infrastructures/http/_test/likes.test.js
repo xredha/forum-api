@@ -160,20 +160,4 @@ describe('/likes endpoint', () => {
       expect(putLikes.message).toEqual('data komentar tidak ditemukan');
     });
   });
-
-  describe('when /DELETE likes', () => {
-    it('should return 200 when likes deleted', async () => {
-      const responseLikes = await server.inject({
-        method: 'PUT',
-        url: `/threads/${threadPayload.id}/comments/${commentPayload.id}/likes/deleted`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const putLikes = JSON.parse(responseLikes.payload);
-      expect(responseLikes.statusCode).toEqual(200);
-      expect(putLikes.status).toEqual('success');
-    });
-  });
 });
