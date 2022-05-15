@@ -5,8 +5,8 @@ class DeleteReplyUseCase {
     this._commentRepository = commentRepository;
   }
 
-  async execute(useCasePayload, useCaseUserIdCredentials) {
-    const { threadId, commentId, replyId } = useCasePayload;
+  async execute(useCaseParams, useCaseUserIdCredentials) {
+    const { threadId, commentId, replyId } = useCaseParams;
 
     await this._threadRepository.checkThreadIfExists(threadId);
     await this._commentRepository.checkCommentIfExists(commentId);

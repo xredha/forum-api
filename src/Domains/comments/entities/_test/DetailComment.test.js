@@ -18,6 +18,7 @@ describe('DetailComment entities', () => {
       date: '00:50:57.265345+07',
       replies: [],
       content: {},
+      likeCount: '999',
     };
 
     expect(() => new DetailComment(payload)).toThrowError(
@@ -32,6 +33,7 @@ describe('DetailComment entities', () => {
       date: '00:50:57.265345+07',
       replies: [{}],
       content: 'test content comment',
+      likeCount: 10,
     };
 
     const detailComment = new DetailComment(payload);
@@ -41,5 +43,6 @@ describe('DetailComment entities', () => {
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.replies).toEqual(payload.replies);
     expect(detailComment.content).toEqual(payload.content);
+    expect(detailComment.likeCount).toEqual(payload.likeCount);
   });
 });
