@@ -4,6 +4,7 @@ const AuthenticationsTableTestHelper = require('../../../../tests/Authentication
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
+const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 
@@ -171,18 +172,31 @@ describe('/threads endpoint', () => {
         comment: 'comment-222',
         owner: 'user-333',
       });
+      // add 2 likes to comment-222
+      await LikesTableTestHelper.likeComment({
+        id: 'like-111',
+        comment: 'comment-222',
+        owner: 'user-222',
+      });
+      await LikesTableTestHelper.likeComment({
+        id: 'like-222',
+        comment: 'comment-222',
+        owner: 'user-333',
+      });
 
       const responseThreads = await server.inject({
         method: 'GET',
         url: `/threads/${thread.id}`,
       });
       const responseJson = JSON.parse(responseThreads.payload);
+
       expect(responseThreads.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data).toBeDefined();
       expect(responseJson.data.thread).toBeDefined();
       expect(responseJson.data.thread.comments).toHaveLength(2);
       expect(responseJson.data.thread.comments[0].replies).toHaveLength(2);
+      expect(responseJson.data.thread.comments[0].likeCount).toEqual(2);
     });
 
     it('should response 404 when thread not found', async () => {

@@ -4,7 +4,7 @@ const DeleteCommentUseCase = require('../DeleteCommentUseCase');
 
 describe('DeleteCommentUseCase', () => {
   it('should orchestrating the delete comment action correctly', async () => {
-    const useCasePayload = {
+    const useCaseParams = {
       id: 'comment-123',
       thread: 'thread-123',
     };
@@ -26,20 +26,20 @@ describe('DeleteCommentUseCase', () => {
       commentRepository: mockCommentRepository,
       threadRepository: mockThreadRepository,
     });
-    await deleteCommentUseCase.execute(useCasePayload, useCaseUserIdCredentials);
+    await deleteCommentUseCase.execute(useCaseParams, useCaseUserIdCredentials);
 
     expect(mockThreadRepository.checkThreadIfExists).toBeCalledWith(
-      useCasePayload.thread,
+      useCaseParams.thread,
     );
     expect(mockCommentRepository.checkCommentIfExists).toBeCalledWith(
-      useCasePayload.id,
+      useCaseParams.id,
     );
     expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(
-      useCasePayload.id,
+      useCaseParams.id,
       useCaseUserIdCredentials,
     );
     expect(mockCommentRepository.deleteComment).toBeCalledWith(
-      useCasePayload.id,
+      useCaseParams.id,
     );
   });
 });

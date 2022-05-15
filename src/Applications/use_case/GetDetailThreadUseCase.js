@@ -1,8 +1,12 @@
+/* eslint-disable no-await-in-loop */
 class GetDetailThreadUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({
+    threadRepository, commentRepository, replyRepository, likeRepository,
+  }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async execute(useCasePayload) {
@@ -14,6 +18,7 @@ class GetDetailThreadUseCase {
     thread.comments = this._isDeleteCommentProcessing(comments);
     const replies = await this._replyRepository.getRepliesByThreadId(id);
     thread.comments = this._isDeleteReplyProcessing(comments, replies);
+    thread.comments = await this._likeCountCommentProcessing(comments);
 
     return thread;
   }
@@ -41,6 +46,13 @@ class GetDetailThreadUseCase {
         delete reply.booldelete;
       });
       comments[i].replies = filteredReplies;
+    }
+    return comments;
+  }
+
+  async _likeCountCommentProcessing(comments) {
+    for (let i = 0; i < comments.length; i += 1) {
+      comments[i].likeCount = await this._likeRepository.getLikeCountByCommentId(comments[i].id);
     }
     return comments;
   }

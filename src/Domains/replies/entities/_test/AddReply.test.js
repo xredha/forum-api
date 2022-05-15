@@ -26,7 +26,7 @@ describe('AddReply entities', () => {
   it('should create addReply object correctly', () => {
     const payload = {
       content: 'test content reply',
-      comment: 'test comment reply',
+      comment: 'comment-123',
       owner: 'user-123',
     };
 
